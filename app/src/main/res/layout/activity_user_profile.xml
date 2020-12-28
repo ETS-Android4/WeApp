@@ -1,0 +1,102 @@
+<LinearLayout    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Settings"
+    android:orientation="vertical"
+    android:background="@android:color/holo_green_dark">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        >
+
+        <ImageView
+            android:id="@+id/userDisplayPicture"
+            android:layout_width="238dp"
+            android:layout_height="238dp"
+            android:layout_gravity="center"
+            android:src="@drawable/default_dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="0dp"
+            tools:ignore="MissingConstraints"
+            />
+
+        <ProgressBar
+            android:id="@+id/userProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/cardview_shadow_end_color"
+            android:foregroundTint="#3F51B5"
+            android:indeterminateDrawable="@drawable/progress"
+            app:layout_constraintBottom_toBottomOf="@+id/userDisplayPicture"
+            app:layout_constraintEnd_toEndOf="@+id/userDisplayPicture"
+            app:layout_constraintStart_toStartOf="@+id/userDisplayPicture"
+            app:layout_constraintTop_toTopOf="@+id/userDisplayPicture" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/userDisplayName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="75dp"
+        android:fontFamily="@font/poppins_light"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/userStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/poppins_light"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/userFriendsStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:fontFamily="@font/poppins_light"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/sendFriendRequest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="#452002"
+        android:fontFamily="@font/poppins_light"
+        android:onClick="sendFriendRequest"
+        android:padding="10dp"
+        android:text="SEND FRIEND REQUEST"
+        android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/declineFriendRequest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="#452002"
+        android:fontFamily="@font/poppins_light"
+        android:onClick="declineFriendRequest"
+        android:padding="10dp"
+        android:text="DECLINE FRIEND REQUEST"
+        android:textColor="#ffffff" />
+
+
+
+
+</LinearLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChangeStatus"
+    android:orientation="vertical">
+
+    <include layout="@layout/app_bar_layout"
+        android:id="@+id/statusAppBar"/>
+<com.google.android.material.textfield.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/newStatus"
+    android:layout_marginTop="100dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    app:boxStrokeColor="@android:color/holo_green_dark"
+    app:hintTextAppearance="@style/MyHintStyle"
+    android:hint="Status">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/statusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_light" /></com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/updateBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:background="#452002"
+        android:fontFamily="@font/poppins_light"
+        android:onClick="modifyStatus"
+        android:padding="10dp"
+        android:text="UPDATE STATUS"
+        android:textColor="#ffffff"
+        android:textStyle="bold" />
+</LinearLayout>
