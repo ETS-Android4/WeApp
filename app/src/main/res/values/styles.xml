@@ -9,7 +9,17 @@
 
     </style>
     <style name="MyHintStyle" parent="@android:style/TextAppearance">
-        <item name="android:textColor">#452002</item>
-        <item name="android:textSize">12sp</item>
+        <item name="titleTextAppearance">@style/AppBarStyle</item>
+    </style>
+    <style name="AppBarStyle" parent="@android:style/TextAppearance">
+        <item name="android:fontFamily">@font/poppins_light</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TabLayoutStyle" parent="@android:style/TextAppearance">
+        <item name="android:fontFamily">@font/poppins_light</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

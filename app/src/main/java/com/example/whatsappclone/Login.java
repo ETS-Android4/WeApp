@@ -208,7 +208,27 @@ public class Login extends AppCompatActivity {
         phoneNumberText = phoneNumber.getEditText().getText().toString();
         Map updateStatus = new HashMap();
         updateStatus.put("online",false);
-        updateStatus.put("lastSeen", ServerValue.TIMESTAMP);
+       // updateStatus.put("lastSeen", ServerValue.TIMESTAMP);
         ref.child(phoneNumberText).updateChildren(updateStatus);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ref.child(phoneNumberText).child("online").setValue(false);
+        ref.child(phoneNumberText).child("lastSeen").setValue(ServerValue.TIMESTAMP);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ref.child(phoneNumberText).child("online").setValue(true);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ref.child(phoneNumberText).child("online").setValue(false);
+        ref.child(phoneNumberText).child("lastSeen").setValue(ServerValue.TIMESTAMP);
     }
 }

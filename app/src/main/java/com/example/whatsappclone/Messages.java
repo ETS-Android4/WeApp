@@ -3,12 +3,10 @@ package com.example.whatsappclone;
 public class Messages {
     private String message,type,from;
     private long time;
-    private boolean seen;
 
 
-    public Messages(String message, boolean seen, String type, long time,String from) {
+    public Messages(String message, String type, long time,String from) {
         this.message = message;
-        this.seen = seen;
         this.type = type;
         this.time = time;
         this.from = from;
@@ -22,10 +20,6 @@ public class Messages {
         this.from = from;
     }
 
-    public boolean isSeen() {
-        return seen;
-    }
-
     public Messages() {
     }
 
@@ -35,10 +29,6 @@ public class Messages {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public void setSeen(boolean seen) {
-        this.seen = seen;
     }
 
     public String getType() {

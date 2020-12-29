@@ -1,26 +1,38 @@
 package com.example.whatsappclone;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LifecycleObserver;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.whatsappclone.sendNotificationCode.Token;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.iid.FirebaseInstanceId;
 
-public class MessagePage extends AppCompatActivity {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class MessagePage extends AppCompatActivity{
     Toolbar mainPageToolBar;
     ViewPager viewPager;
-    SectionsPagerAdapter secionsPagerAdapater;
+    SectionsPagerAdapter sectionsPagerAdapter;
     TabLayout tabLayout;
     SharedPreferences pref;
     DatabaseReference ref;
@@ -35,8 +47,8 @@ public class MessagePage extends AppCompatActivity {
 
         mainPageToolBar = findViewById(R.id.mainAppBar);
         viewPager = findViewById(R.id.tabPager);
-        secionsPagerAdapater = new SectionsPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(secionsPagerAdapater);
+        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(sectionsPagerAdapter);
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -46,25 +58,8 @@ public class MessagePage extends AppCompatActivity {
 
         setSupportActionBar(mainPageToolBar);
         getSupportActionBar().setTitle("We App");
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        ref.child("online").setValue(true);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ref.child("online").setValue(true);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        ref.child("online").setValue(false);
-        ref.child("lastSeen").setValue(ServerValue.TIMESTAMP);
+        updateToken();
     }
 
     @Override
@@ -93,5 +88,13 @@ public class MessagePage extends AppCompatActivity {
              startActivity(intentUsers);
          }
          return true;
+    }
+
+    public void updateToken() {
+        String refreshId = FirebaseInstanceId.getInstance().getToken();
+        Token token = new Token(refreshId);
+        Map updateHashMap = new HashMap<>();
+        updateHashMap.put("token",token.getToken());
+        ref.updateChildren(updateHashMap);
     }
 }

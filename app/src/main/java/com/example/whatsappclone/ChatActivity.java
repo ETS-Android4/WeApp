@@ -81,6 +81,7 @@ private static final int GALLERY_PICK = 1;
         thumbnailImage = getIntent().getStringExtra("thumbnail");
 
         rootRef = FirebaseDatabase.getInstance().getReference();
+        rootRef.keepSynced(true);
         imageStorage = FirebaseStorage.getInstance().getReference();
 
         toolbar = findViewById(R.id.chatAppBar);
@@ -99,7 +100,7 @@ private static final int GALLERY_PICK = 1;
         displayLastSeenView = findViewById(R.id.chatLastSeen);
         displayPictureView = findViewById(R.id.chatDisplayPicture);
 
-        messageAdapter = new MessageAdapter(messagesList,uid);
+        messageAdapter = new MessageAdapter(messagesList,uid,getApplicationContext());
 
         messageView = findViewById(R.id.messagesList);
         linearLayoutManager = new LinearLayoutManager(this);
@@ -192,14 +193,12 @@ private static final int GALLERY_PICK = 1;
                             Map messageMapFrom = new HashMap();
                             messageMapFrom.put("message",downloadUrl);
                             messageMapFrom.put("type","image");
-                            messageMapFrom.put("seen",true);
                             messageMapFrom.put("time",ServerValue.TIMESTAMP);
                             messageMapFrom.put("from",uid);
 
                             Map messageMapTo = new HashMap();
                             messageMapTo.put("message",downloadUrl);
                             messageMapTo.put("type","image");
-                            messageMapTo.put("seen",false);
                             messageMapTo.put("time",ServerValue.TIMESTAMP);
                             messageMapTo.put("from",uid);
 
@@ -235,7 +234,8 @@ private static final int GALLERY_PICK = 1;
                 final String messageKey = snapshot.getKey();
 
                 if(!messageKey.equals(prevKey)){
-                    messagesList.add(itemPos++,messages);
+                    messagesList.add(itemPos,messages);
+                    itemPos++;
                 }else{
                     prevKey = lastKey;
                 }
@@ -243,9 +243,11 @@ private static final int GALLERY_PICK = 1;
                 if(itemPos==1){
                     lastKey = messageKey;
                 }
+
+                Log.d("KEY",prevKey + "|" + lastKey + "|" + messageKey);
                 messageAdapter.notifyDataSetChanged();
                 refreshLayout.setRefreshing(false);
-                linearLayoutManager.scrollToPositionWithOffset(TOTAL_ITEMS_TO_LOAD-2,0);
+                linearLayoutManager.scrollToPosition(TOTAL_ITEMS_TO_LOAD-1);
             }
 
             @Override
@@ -268,22 +270,6 @@ private static final int GALLERY_PICK = 1;
 
             }
         });
-
-        /*Query updateSeenQuery = rootRef.child("messages").child(uid).child(userId).orderByChild("seen");
-        updateSeenQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot childSnapshot: snapshot.getChildren()) {
-                    String key=childSnapshot.getKey();
-                    messageRef.child(key).child("seen").setValue(true);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });*/
     }
 
     private void loadMessages() {
@@ -306,7 +292,7 @@ private static final int GALLERY_PICK = 1;
 
                 messagesList.add(messages);
                 messageAdapter.notifyDataSetChanged();
-                linearLayoutManager.scrollToPosition(TOTAL_ITEMS_TO_LOAD);
+                messageView.smoothScrollToPosition(messagesList.size()-1);
                 refreshLayout.setRefreshing(false);
              }
 
@@ -329,24 +315,8 @@ private static final int GALLERY_PICK = 1;
              public void onCancelled(@NonNull DatabaseError error) {
 
              }
+
          });
-
-        /*Query updateSeenQuery = rootRef.child("messages").child(uid).child(userId).orderByChild("seen");
-        updateSeenQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot childSnapshot: snapshot.getChildren()) {
-                    String key = childSnapshot.getKey();
-                    messageRef.child(key).child("seen").setValue(true);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });*/
-
     }
 
     public void sendMessage(View view){
@@ -363,14 +333,12 @@ private static final int GALLERY_PICK = 1;
             Map messageMapFrom = new HashMap();
             messageMapFrom.put("message",message);
             messageMapFrom.put("type","text");
-            messageMapFrom.put("seen",true);
             messageMapFrom.put("time",ServerValue.TIMESTAMP);
             messageMapFrom.put("from",uid);
 
             Map messageMapTo = new HashMap();
             messageMapTo.put("message",message);
             messageMapTo.put("type","text");
-            messageMapTo.put("seen",false);
             messageMapTo.put("time",ServerValue.TIMESTAMP);
             messageMapTo.put("from",uid);
 
@@ -395,7 +363,6 @@ private static final int GALLERY_PICK = 1;
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(!snapshot.hasChild(userId)){
                         Map chatAddMap = new HashMap();
-                        chatAddMap.put("seen",false);
                         chatAddMap.put("timeStamp", ServerValue.TIMESTAMP);
 
                         Map chatUserMap = new HashMap();
@@ -418,4 +385,5 @@ private static final int GALLERY_PICK = 1;
             });
         }
     }
+
 }

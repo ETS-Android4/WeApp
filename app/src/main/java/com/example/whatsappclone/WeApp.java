@@ -52,4 +52,6 @@ public class WeApp extends Application {
         built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
     }
+
+    
 }

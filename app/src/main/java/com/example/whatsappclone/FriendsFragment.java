@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -202,11 +203,12 @@ SharedPreferences pref;
 
         public void setOnline(final String onlineStatus) {
             final ImageView imageView = view.findViewById(R.id.onlineStatus);
-            if(onlineStatus.equals("Online")||onlineStatus.equals("just now")){
+            if(onlineStatus.equals("Online")){
                 imageView.setVisibility(View.VISIBLE);
             }
             else{
                 imageView.setVisibility(View.INVISIBLE);
+
             }
 
         }

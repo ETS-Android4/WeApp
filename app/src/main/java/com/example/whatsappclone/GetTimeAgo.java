@@ -27,8 +27,10 @@ public class GetTimeAgo {
         // TODO: localize
         final long diff = now - time;
         if (diff < MINUTE_MILLIS) {
+            return "Online";
+        }else if(diff < 1.7 * MINUTE_MILLIS){
             return "just now";
-        } else if (diff < 2 * MINUTE_MILLIS) {
+        }else if (diff < 2 * MINUTE_MILLIS) {
             return "a minute ago";
         } else if (diff < 50 * MINUTE_MILLIS) {
             return diff / MINUTE_MILLIS + " minutes ago";

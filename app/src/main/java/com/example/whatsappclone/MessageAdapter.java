@@ -1,6 +1,7 @@
 package com.example.whatsappclone;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.media.Image;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,13 +34,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
     private List<Messages> messagesList;
         String uid="";
+        Context ctx;
         DatabaseReference ref;
     @SuppressLint("WrongConstant")
 
 
-    public MessageAdapter(List<Messages> messagesList,String uid) {
+    public MessageAdapter(List<Messages> messagesList,String uid,Context ctx) {
         this.messagesList = messagesList;
         this.uid = uid;
+        this.ctx=ctx;
     }
 
     @NonNull
@@ -57,67 +61,91 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         final String userID = c.getFrom();
         final String type = c.getType();
 
+        if(userID.equals("")||uid.equals("")){
+            Toast.makeText(ctx, "You have reached the top!", Toast.LENGTH_SHORT).show();
+        }
+        else{
             ref.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(!userID.equals(uid)){
-                    final String thumbnailImage = snapshot.child("thumbnail").getValue(String.class);
-                   Picasso.get().load(thumbnailImage).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.default_dp).into(holder.profileImage, new Callback() {
-                        @Override
-                        public void onSuccess() {
+                    if(snapshot.exists()){
+                        if(!userID.equals(uid)){
+                            final String thumbnailImage = snapshot.child("thumbnail").getValue(String.class);
+                            Picasso.get().load(thumbnailImage).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.default_dp).into(holder.profileImage, new Callback() {
+                                @Override
+                                public void onSuccess() {
 
-                        }
+                                }
 
-                        @Override
-                        public void onError(Exception e) {
-                            Picasso.get().load(thumbnailImage).placeholder(R.drawable.default_dp).into(holder.profileImage);
-                        }
-                    });
-                        if(type.equals("text")) {
-                            holder.messageTextTo.setText(c.getMessage());
-                            holder.messageTextTo.setVisibility(View.VISIBLE);
+                                @Override
+                                public void onError(Exception e) {
+                                    Picasso.get().load(thumbnailImage).placeholder(R.drawable.default_dp).into(holder.profileImage);
+                                }
+                            });
+                            if(type.equals("text")) {
+                                holder.messageTextTo.setText(c.getMessage());
+                                holder.messageTextTo.setVisibility(View.VISIBLE);
 
-                            holder.messageTextFrom.setVisibility(View.INVISIBLE);
-                            holder.messageTextFrom.setText("");
-                            holder.imageViewTo.setVisibility(View.INVISIBLE);
-                            holder.imageViewTo.setImageDrawable(null);
-                        }else{
-                            holder.messageTextTo.setText("");
-                            holder.messageTextTo.setVisibility(View.INVISIBLE);
-                            holder.imageViewTo.setVisibility(View.VISIBLE);
-                            Picasso.get().load(c.getMessage()).into(holder.imageViewTo);
-                            holder.messageTextFrom.setVisibility(View.INVISIBLE);
-                            holder.messageTextFrom.setText("");
-                        }
-                        holder.imageViewFrom.setVisibility(View.INVISIBLE);
-                        holder.imageViewFrom.setImageDrawable(null);
-                        holder.profileImage.setVisibility(View.VISIBLE);
-                        holder.messageTextTo.setBackgroundResource(R.drawable.message_text_background_to);
-                    }else{
-                        if(type.equals("text")) {
-                            holder.messageTextFrom.setText(c.getMessage());
-                            holder.messageTextFrom.setVisibility(View.VISIBLE);
-                            holder.messageTextTo.setVisibility(View.INVISIBLE);
-                            holder.messageTextTo.setText("");
-                            holder.imageViewTo.setVisibility(View.INVISIBLE);
-                            holder.imageViewTo.setImageDrawable(null);
+                                holder.messageTextFrom.setVisibility(View.INVISIBLE);
+                                holder.messageTextFrom.setText("");
+                                holder.imageViewTo.setVisibility(View.INVISIBLE);
+                                holder.imageViewTo.setImageDrawable(null);
+                            }else{
+                                holder.messageTextTo.setText("");
+                                holder.messageTextTo.setVisibility(View.INVISIBLE);
+                                holder.imageViewTo.setVisibility(View.VISIBLE);
+                                Picasso.get().load(c.getMessage()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.imageViewTo, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        Picasso.get().load(c.getMessage()).into(holder.imageViewTo);
+                                    }
+                                });
+                                holder.messageTextFrom.setVisibility(View.INVISIBLE);
+                                holder.messageTextFrom.setText("");
+                            }
                             holder.imageViewFrom.setVisibility(View.INVISIBLE);
                             holder.imageViewFrom.setImageDrawable(null);
+                            holder.profileImage.setVisibility(View.VISIBLE);
+                            holder.messageTextTo.setBackgroundResource(R.drawable.message_text_background_to);
                         }else{
-                            holder.messageTextTo.setText("");
-                            holder.messageTextTo.setVisibility(View.INVISIBLE);
-                            holder.imageViewFrom.setVisibility(View.VISIBLE);
-                            Picasso.get().load(c.getMessage()).into(holder.imageViewFrom);
-                            holder.messageTextFrom.setVisibility(View.INVISIBLE);
-                            holder.messageTextFrom.setText("");
-                            holder.imageViewTo.setVisibility(View.INVISIBLE);
-                            holder.imageViewTo.setImageDrawable(null);
+                            if(type.equals("text")) {
+                                holder.messageTextFrom.setText(c.getMessage());
+                                holder.messageTextFrom.setVisibility(View.VISIBLE);
+                                holder.messageTextTo.setVisibility(View.INVISIBLE);
+                                holder.messageTextTo.setText("");
+                                holder.imageViewTo.setVisibility(View.INVISIBLE);
+                                holder.imageViewTo.setImageDrawable(null);
+                                holder.imageViewFrom.setVisibility(View.INVISIBLE);
+                                holder.imageViewFrom.setImageDrawable(null);
+                            }else{
+                                holder.messageTextTo.setText("");
+                                holder.messageTextTo.setVisibility(View.INVISIBLE);
+                                holder.imageViewFrom.setVisibility(View.VISIBLE);
+                                Picasso.get().load(c.getMessage()).networkPolicy(NetworkPolicy.OFFLINE).into(holder.imageViewFrom, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        Picasso.get().load(c.getMessage()).into(holder.imageViewFrom);
+                                    }
+                                });
+                                holder.messageTextFrom.setVisibility(View.INVISIBLE);
+                                holder.messageTextFrom.setText("");
+                                holder.imageViewTo.setVisibility(View.INVISIBLE);
+                                holder.imageViewTo.setImageDrawable(null);
+                            }
+                            holder.profileImage.setVisibility(View.INVISIBLE);
+                            holder.messageTextFrom.setBackgroundResource(R.drawable.message_text_background_from);
                         }
-                        holder.profileImage.setVisibility(View.INVISIBLE);
-                        holder.messageTextFrom.setBackgroundResource(R.drawable.message_text_background_from);
                     }
-
-
                 }
 
                 @Override
@@ -125,6 +153,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
                 }
             });
+        }
 
     }
 

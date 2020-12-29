@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 public class SignUp extends AppCompatActivity {
@@ -32,6 +33,7 @@ public class SignUp extends AppCompatActivity {
     String nameText,passwordText,phoneNumberText,emailText;
     String encryptPasswordText = null;
     boolean validateName,validatePhone,validatePassword,validateEmail;
+    DatabaseReference ref;
 
     public boolean validateName(String val){
         if(val.isEmpty()){
@@ -99,7 +101,7 @@ public class SignUp extends AppCompatActivity {
         }
     }
     public void isUser(){
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
+
         Query checkUser = ref.orderByChild("phoneNumber").equalTo(phoneNumberText);
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -163,6 +165,7 @@ public class SignUp extends AppCompatActivity {
         title = findViewById(R.id.title);
         intent = new Intent(SignUp.this,Login.class);
         cipherClass = new CipherClass();
+        ref = FirebaseDatabase.getInstance().getReference("users");
 
 
         pairs[0] = new Pair<View,String>(name,"signUpTrans");
@@ -175,4 +178,5 @@ public class SignUp extends AppCompatActivity {
         options = ActivityOptions.makeSceneTransitionAnimation(SignUp.this,pairs);
 
     }
+
 }

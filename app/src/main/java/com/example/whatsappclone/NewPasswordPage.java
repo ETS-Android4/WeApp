@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 public class NewPasswordPage extends AppCompatActivity {
@@ -60,12 +61,11 @@ Toolbar toolbar;
                 "$";
         if(!newPasswordText.equals(reNewPasswordText)){
             newPassword.setError("Password Do Not Match");
-        }else if(newPasswordText.isEmpty()){
+        }else if(newPasswordText.isEmpty()||reNewPasswordText.isEmpty()){
             newPassword.setError("Field Cannot be Left Empty");
+            reNewPassword.setError("Field Cannot be Left Empty");
         }else if (!newPasswordText.matches(passwordVal)) {
             newPassword.setError("Password is too Weak");
-        }else if(reNewPasswordText.isEmpty()){
-            reNewPassword.setError("Field Cannot be Left Empty");
         }else{
             newPassword.setError(null);
             newPassword.setErrorEnabled(false);
@@ -83,4 +83,5 @@ Toolbar toolbar;
         intent_new.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent_new);
     }
+
 }

@@ -16,17 +16,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 public class ForgetPasswordPage extends AppCompatActivity {
 TextInputLayout phoneNumber;
 String phoneNumberText;
 Toolbar toolbar;
+DatabaseReference ref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forget_password_page);
         phoneNumber = findViewById(R.id.phoneNumber);
+        ref = FirebaseDatabase.getInstance().getReference("users");
         toolbar = findViewById(R.id.forgetPasswordBar1);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Forget Password");
@@ -49,7 +52,6 @@ Toolbar toolbar;
         }
         else{
 
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
             Query checkUser = ref.orderByChild("phoneNumber").equalTo(phoneNumberText);
             checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

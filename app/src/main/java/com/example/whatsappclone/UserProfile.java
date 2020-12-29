@@ -32,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.NetworkPolicy;
@@ -43,6 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.internal.util.HashMapSupplier;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -93,21 +95,6 @@ private ApiService apiService;
 
             sendFriendRequestButton.setVisibility(View.INVISIBLE);
             declineFriendRequestButton.setVisibility(View.INVISIBLE);
-
-            friendRef.child(uid).child(userId).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        String date = snapshot.child("Date").getValue(String.class);
-                        friendsStatus.setText("Friends Since: " + date);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
         }
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -159,6 +146,8 @@ private ApiService apiService;
                                         if(snapshot.hasChild(userId)){
                                             currentState = "friends";
                                             sendFriendRequestButton.setText("UNFRIEND "+ name.getText().toString());
+                                            String date = snapshot.child(userId).child("Date").getValue(String.class);
+                                            friendsStatus.setText("Friends Since: " + date);
                                             declineFriendRequestButton.setEnabled(false);
                                             declineFriendRequestButton.setVisibility(View.INVISIBLE);
                                         }
@@ -308,6 +297,11 @@ private ApiService apiService;
                     declineFriendRequestButton.setVisibility(View.INVISIBLE);
                 }
             });
+
+            Map removeChat = new HashMap();
+            removeChat.put("chat/"+uid+"/"+userId,null);
+            removeChat.put("chat/"+userId+"/"+uid,null);
+            rootRef.updateChildren(removeChat);
         }
     }
 
@@ -370,4 +364,5 @@ private ApiService apiService;
             }
         });
     }
+
 }

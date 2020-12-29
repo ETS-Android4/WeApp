@@ -1,12 +1,15 @@
 package com.example.whatsappclone;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -40,13 +44,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static android.content.Context.MODE_APPEND;
 
 
-public class ChatsFragment extends Fragment {
+public class ChatsFragment extends Fragment{
     private RecyclerView convList;
     private DatabaseReference convRef,messageRef,usersRef;
     private View mainView;
     SharedPreferences pref;
     String uid;
-
+    ImageView imageViewBackground;
 
     public ChatsFragment() {
         // Required empty public constructor
@@ -95,7 +99,7 @@ public class ChatsFragment extends Fragment {
                             @NonNull
                             @Override
                             public ConvClass parseSnapshot(@NonNull DataSnapshot snapshot) {
-                                return new ConvClass((Boolean)snapshot.child("seen").getValue(),snapshot.child("timeStamp").getValue(Long.class));
+                                return new ConvClass(snapshot.child("timeStamp").getValue(Long.class));
                             }
                         })
                         .build();
@@ -112,9 +116,9 @@ public class ChatsFragment extends Fragment {
                         { String data = snapshot.child("message").getValue().toString();
                         String type = snapshot.child("type").getValue().toString();
                         if(type.equals("text")){
-                            holder.setMessage(data,model.isSeen());
+                            holder.setMessage(data);
                         }else{
-                            holder.setMessage("Image",model.isSeen());
+                            holder.setMessage("Image");
                         }
                     }}
 
@@ -164,6 +168,8 @@ public class ChatsFragment extends Fragment {
                                 startActivity(chatIntent);
                             }
                         });
+
+
                     }
 
                     @Override
@@ -182,29 +188,24 @@ public class ChatsFragment extends Fragment {
             }
         };
 
-
-
         convList.setAdapter(firebaseRecyclerAdapter);
         firebaseRecyclerAdapter.startListening();
     }
 
+
     private class ConvViewHolder extends RecyclerView.ViewHolder{
         View view;
+
 
         public ConvViewHolder(View itemView){
             super(itemView);
             view = itemView;
         }
 
-        public void setMessage(String message,boolean isSeen){
+        public void setMessage(String message){
             TextView userStatusView = view.findViewById(R.id.userSingleStatus);
             userStatusView.setText(message);
 
-            if(!isSeen){
-                userStatusView.setTypeface(userStatusView.getTypeface(), Typeface.BOLD);
-            }else{
-                userStatusView.setTypeface(userStatusView.getTypeface(), Typeface.BOLD);
-            }
         }
 
         public void setImage(final String thumbnailImage){
@@ -242,4 +243,5 @@ public class ChatsFragment extends Fragment {
             });
         }
     }
+
 }

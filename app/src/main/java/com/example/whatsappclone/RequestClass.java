@@ -4,6 +4,7 @@ public class RequestClass {
 String type;
 
     public RequestClass() {
+        return;
     }
 
     public RequestClass(String type) {

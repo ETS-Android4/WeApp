@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
@@ -83,7 +84,7 @@ public class RequestFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        Query query = FirebaseDatabase.getInstance().getReference().child("friendsRequest").child(uid);
+        Query query = FirebaseDatabase.getInstance().getReference().child("friendsRequest").child(uid).orderByChild("received");
         query.keepSynced(true);
 
         final FirebaseRecyclerOptions<RequestClass> options =
@@ -92,7 +93,7 @@ public class RequestFragment extends Fragment {
                             @NonNull
                             @Override
                             public RequestClass parseSnapshot(@NonNull DataSnapshot snapshot) {
-                                return new RequestClass(snapshot.child("requestType").getValue(String.class));
+                                    return new RequestClass(snapshot.child("requestType").getValue(String.class));
                             }
                         })
                         .build();
@@ -101,9 +102,7 @@ public class RequestFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull final RequestViewHolder holder, final int position, @NonNull final RequestClass model) {
                 final String userId = getRef(position).getKey();
-
-
-                if(model.getType().equals("received")){
+                holder.setType(model.getType());
                     usersRef.child(userId).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -127,12 +126,9 @@ public class RequestFragment extends Fragment {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-                            notifyItemRemoved(position);
+
                         }
                     });
-                }else{
-
-                }
             }
 
             @NonNull
@@ -155,8 +151,6 @@ public class RequestFragment extends Fragment {
             super(itemView);
             view = itemView;
         }
-
-
         public void setName(String name) {
             TextView nameView = view.findViewById(R.id.requestSingleDisplayName);
             nameView.setText(name);
@@ -178,6 +172,12 @@ public class RequestFragment extends Fragment {
         public void setNumber(String number) {
             TextView numberView = view.findViewById(R.id.requestSingleStatus);
             numberView.setText(number);
+        }
+
+        public void setType(String type) {
+            TextView typeView = view.findViewById(R.id.reqType);
+            type = type.toUpperCase();
+            typeView.setText(type);
         }
     }
 }

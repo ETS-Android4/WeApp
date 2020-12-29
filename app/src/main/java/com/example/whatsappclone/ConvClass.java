@@ -1,16 +1,8 @@
 package com.example.whatsappclone;
 
 public class ConvClass {
-    public boolean seen;
     public long timestamp;
 
-    public boolean isSeen() {
-        return seen;
-    }
-
-    public void setSeen(boolean seen) {
-        this.seen = seen;
-    }
 
     public long getTimestamp() {
         return timestamp;
@@ -20,8 +12,7 @@ public class ConvClass {
         this.timestamp = timestamp;
     }
 
-    public ConvClass(boolean seen, long timestamp) {
-        this.seen = seen;
+    public ConvClass(long timestamp) {
         this.timestamp = timestamp;
     }
 
