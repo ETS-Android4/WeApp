@@ -76,6 +76,8 @@ ProgressBar progressBar;
         ref.keepSynced(true);
 
         checkUser = ref.orderByChild("phoneNumber").equalTo(phoneNumberText);
+        checkUser.keepSynced(true);
+
 
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -92,13 +94,13 @@ ProgressBar progressBar;
                     setStatus(statusText);
                 }
                 else{
-                    Toast.makeText(Settings.this, "Error! Try Again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Settings.this, "Error in retrieving the Data!", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(Settings.this, "Error! Try Again!", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -126,7 +128,6 @@ ProgressBar progressBar;
         Intent intentStatus = new Intent(Settings.this,ChangeStatus.class);
         intentStatus.putExtra("status",statusText);
         startActivity(intentStatus);
-        finish();
     }
 
     public void changeImage(View view){
@@ -160,7 +161,7 @@ ProgressBar progressBar;
                             .setQuality(75)
                             .compressToBitmap(thumbnailFilePath);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -208,9 +209,16 @@ ProgressBar progressBar;
                                     }
                                 });
                             }
-                        });
+                        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(Settings.this, "Image could not be uploaded!", Toast.LENGTH_LONG).show();
+                    }
+                });
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                Toast.makeText(this, error.toString(), Toast.LENGTH_LONG).show();
             }
         }
     }

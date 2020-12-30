@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -45,7 +46,6 @@ private View mainView;
 SharedPreferences pref;
 
     public FriendsFragment() {
-        // Required empty public constructor
     }
 
 
@@ -148,7 +148,7 @@ SharedPreferences pref;
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        Toast.makeText(getContext(), "Error! Not able to show your friends!", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -208,9 +208,7 @@ SharedPreferences pref;
             }
             else{
                 imageView.setVisibility(View.INVISIBLE);
-
             }
-
         }
     }
 }

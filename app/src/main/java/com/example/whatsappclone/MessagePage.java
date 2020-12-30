@@ -55,7 +55,7 @@ public class MessagePage extends AppCompatActivity{
         pref = getSharedPreferences("UID",MODE_APPEND);
         UID = pref.getString("phoneNumber","");
         ref = FirebaseDatabase.getInstance().getReference().child("users").child(UID);
-
+        ref.keepSynced(true);
         setSupportActionBar(mainPageToolBar);
         getSupportActionBar().setTitle("We App");
 

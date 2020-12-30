@@ -43,9 +43,7 @@ public class AllUsers extends AppCompatActivity{
     DatabaseReference firebaseDatabase;
     SharedPreferences pref;
     String uid;
-    String userName;
     TextInputEditText phoneNumberText;
-    TextView toolBarTitle;
 
     @SuppressLint("WrongConstant")
     @Override
@@ -93,7 +91,7 @@ public class AllUsers extends AppCompatActivity{
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            Toast.makeText(AllUsers.this, "Profile cannot be accessed!", Toast.LENGTH_LONG).show();
                         }
                     });
                     return true;
@@ -117,9 +115,8 @@ public class AllUsers extends AppCompatActivity{
                             @NonNull
                             @Override
                             public UserClass parseSnapshot(@NonNull DataSnapshot snapshot) {
-
                                     return new UserClass(snapshot.child("name").getValue(String.class),
-                                        snapshot.child("phoneNumber").getValue(String.class),
+                                        snapshot.child("status").getValue(String.class),
                                         snapshot.child("image").getValue(String.class),
                                         snapshot.child("thumbnail").getValue(String.class));}
 

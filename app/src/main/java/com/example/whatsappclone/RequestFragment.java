@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -36,19 +37,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.content.Context.MODE_APPEND;
 
-public class RequestFragment extends Fragment {
+public class
+RequestFragment extends Fragment {
     private RecyclerView requestList;
     private DatabaseReference friendsRef,usersRef;
     private View mainView;
     SharedPreferences pref;
     String uid;
-    Button acceptButton,declineButton;
 
     public RequestFragment() {
         // Required empty public constructor
     }
-
-
 
     @SuppressLint("WrongConstant")
     @Override
@@ -84,7 +83,7 @@ public class RequestFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        Query query = FirebaseDatabase.getInstance().getReference().child("friendsRequest").child(uid).orderByChild("received");
+        Query query = FirebaseDatabase.getInstance().getReference().child("friendsRequest").child(uid).orderByChild("requestType").equalTo("received");
         query.keepSynced(true);
 
         final FirebaseRecyclerOptions<RequestClass> options =
@@ -102,7 +101,7 @@ public class RequestFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull final RequestViewHolder holder, final int position, @NonNull final RequestClass model) {
                 final String userId = getRef(position).getKey();
-                holder.setType(model.getType());
+                //holder.setType(model.getType());
                     usersRef.child(userId).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -126,7 +125,7 @@ public class RequestFragment extends Fragment {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            Toast.makeText(getContext(), "Not able to retrieve data from Database", Toast.LENGTH_LONG).show();
                         }
                     });
             }
@@ -174,11 +173,11 @@ public class RequestFragment extends Fragment {
             numberView.setText(number);
         }
 
-        public void setType(String type) {
+        /*public void setType(String type) {
             TextView typeView = view.findViewById(R.id.reqType);
             type = type.toUpperCase();
             typeView.setText(type);
-        }
+        }*/
     }
 }
 

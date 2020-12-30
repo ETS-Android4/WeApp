@@ -38,7 +38,9 @@ public class ChangeStatus extends AppCompatActivity {
         pref = getSharedPreferences("UID",MODE_APPEND);
         phoneNumberText = pref.getString("phoneNumber", "");
         ref = FirebaseDatabase.getInstance().getReference("users");
+        ref.keepSynced(true);
         checkUser = ref.orderByChild("phoneNumber").equalTo(phoneNumberText);
+        checkUser.keepSynced(true);
         showExistingStatus();
 
     }

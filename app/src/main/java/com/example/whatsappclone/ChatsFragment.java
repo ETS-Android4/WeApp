@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -50,10 +51,8 @@ public class ChatsFragment extends Fragment{
     private View mainView;
     SharedPreferences pref;
     String uid;
-    ImageView imageViewBackground;
 
     public ChatsFragment() {
-        // Required empty public constructor
     }
 
     @SuppressLint("WrongConstant")
@@ -76,6 +75,7 @@ public class ChatsFragment extends Fragment{
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
         messageRef = FirebaseDatabase.getInstance().getReference().child("messages").child(uid);
         usersRef.keepSynced(true);
+        messageRef.keepSynced(true);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setReverseLayout(true);
@@ -113,14 +113,16 @@ public class ChatsFragment extends Fragment{
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                         if(snapshot.exists())
-                        { String data = snapshot.child("message").getValue().toString();
-                        String type = snapshot.child("type").getValue().toString();
-                        if(type.equals("text")){
-                            holder.setMessage(data);
-                        }else{
-                            holder.setMessage("Image");
+                        {
+                            String data = snapshot.child("message").getValue().toString();
+                            String type = snapshot.child("type").getValue().toString();
+                            if(type.equals("text")){
+                                holder.setMessage(data);
+                            }else{
+                                holder.setMessage("Image");
+                            }
                         }
-                    }}
+                    }
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -139,7 +141,7 @@ public class ChatsFragment extends Fragment{
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        notifyItemRemoved(position);
+                        Toast.makeText(getActivity(), "Error in showing the chats!", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -149,11 +151,6 @@ public class ChatsFragment extends Fragment{
                         final String userName = snapshot.child("name").getValue(String.class);
                         final String thumbnailImage = snapshot.child("thumbnail").getValue(String.class);
 
-                        GetTimeAgo getTimeAgo = new GetTimeAgo();
-                        long lastSeenTime =  snapshot.child("lastSeen").getValue(Long.class);
-                        String lastSeenString = getTimeAgo.getTimeAgo(lastSeenTime);
-
-                        holder.setOnline(lastSeenString);
                         holder.setName(userName);
                         holder.setImage(thumbnailImage);
 
@@ -168,16 +165,13 @@ public class ChatsFragment extends Fragment{
                                 startActivity(chatIntent);
                             }
                         });
-
-
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        notifyItemRemoved(position);
+                        Toast.makeText(getActivity(), "Error in showing the chats!", Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
 
             @NonNull
@@ -187,7 +181,6 @@ public class ChatsFragment extends Fragment{
                 return new ConvViewHolder(view);
             }
         };
-
         convList.setAdapter(firebaseRecyclerAdapter);
         firebaseRecyclerAdapter.startListening();
     }
@@ -228,20 +221,5 @@ public class ChatsFragment extends Fragment{
             userNameView.setText(name);
         }
 
-        public void setOnline(final String lastSeen){
-            final ImageView imageView = view.findViewById(R.id.onlineStatus);
-            Picasso.get().load(lastSeen).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.default_dp).into(imageView, new Callback() {
-                @Override
-                public void onSuccess() {
-
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    Picasso.get().load(lastSeen).placeholder(R.drawable.default_dp).into(imageView);
-                }
-            });
         }
-    }
-
 }

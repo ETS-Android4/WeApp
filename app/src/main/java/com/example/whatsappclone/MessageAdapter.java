@@ -52,6 +52,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 .inflate(R.layout.message_single_layout_from,parent,false);
 
         ref = FirebaseDatabase.getInstance().getReference();
+        ref.keepSynced(true);
         return new MessageViewHolder(view);
     }
 
@@ -145,12 +146,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             holder.profileImage.setVisibility(View.INVISIBLE);
                             holder.messageTextFrom.setBackgroundResource(R.drawable.message_text_background_from);
                         }
+                    }else{
+                        Toast.makeText(ctx, "Not able to retrieve messages!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Toast.makeText(ctx, "Error in retrieving the information!", Toast.LENGTH_SHORT).show();
                 }
             });
         }

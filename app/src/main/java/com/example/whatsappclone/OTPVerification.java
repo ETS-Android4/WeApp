@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
@@ -41,7 +42,8 @@ public class OTPVerification extends AppCompatActivity {
     Intent intent;
     int counter;
     CountDownTimer countDownTimer;
-    long timeInMilliSeconds = 120000;
+    int SECONDS = 120;
+    long TIME_IN_MILLI_SECONDS = SECONDS * 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +63,11 @@ public class OTPVerification extends AppCompatActivity {
         counter = getIntent().getIntExtra("counter",0);
 
         myRef = FirebaseDatabase.getInstance().getReference("users");
-        intent = new Intent(OTPVerification.this,Login.class);
+        myRef.keepSynced(true);
 
+        intent = new Intent(OTPVerification.this,Login.class);
         timer = findViewById(R.id.timer);
-        updateTimer(120); //60 seconds
+        updateTimer(SECONDS); //120 seconds
         resendButton.setVisibility(View.INVISIBLE);
 
         countDownTime();
@@ -74,7 +77,7 @@ public class OTPVerification extends AppCompatActivity {
     }
 
     private void countDownTime() {
-        countDownTimer = new CountDownTimer(timeInMilliSeconds, 1000) {
+        countDownTimer = new CountDownTimer(TIME_IN_MILLI_SECONDS, 1000) {
 
             @Override
             public void onTick(long l) {
@@ -103,14 +106,13 @@ public class OTPVerification extends AppCompatActivity {
         }
 
         timer.setText(minutesString + ":" + secondString);
-
     }
 
     private void sendVerificationCode(String phoneNumberText) {
         PhoneAuthOptions options =
                 PhoneAuthOptions.newBuilder(mAuth)
                         .setPhoneNumber("+91"+phoneNumberText)       // Phone number to verify
-                        .setTimeout(timeInMilliSeconds, TimeUnit.MILLISECONDS) // Timeout and unit
+                        .setTimeout(TIME_IN_MILLI_SECONDS, TimeUnit.MILLISECONDS) // Timeout and unit
                         .setActivity(OTPVerification.this)                 // Activity (for callback binding)
                         .setCallbacks(mCallbacks)          // OnVerificationStateChangedCallbacks
                         .build();
@@ -133,7 +135,7 @@ public class OTPVerification extends AppCompatActivity {
 
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
-            Toast.makeText(OTPVerification.this, "Verification Failed! Enter Correct OTP", Toast.LENGTH_SHORT).show();
+            Toast.makeText(OTPVerification.this, "Verification Failed! Enter Correct OTP", Toast.LENGTH_LONG).show();
         }
     };
 
@@ -151,7 +153,6 @@ public class OTPVerification extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                  if(task.isSuccessful()){
                      if(counter==1){
-
                             UserHelperClass userHelperClass = new UserHelperClass(nameText,phoneNumberText,emailText,passwordText,"default_dp.png","Hi There! I am using We App","default_dp.png");
                             myRef.child(phoneNumberText).setValue(userHelperClass,new DatabaseReference.CompletionListener() {
                          public void onComplete(DatabaseError error, DatabaseReference ref) {
@@ -176,6 +177,12 @@ public class OTPVerification extends AppCompatActivity {
                      Toast.makeText(OTPVerification.this, "Invalid OTP", Toast.LENGTH_SHORT).show();
                  }
             }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(OTPVerification.this, "Error in verifying the credentials!", Toast.LENGTH_LONG).show();
+            }
         });
 
     }
@@ -196,7 +203,7 @@ public class OTPVerification extends AppCompatActivity {
     }
 
     private void resetTimer() {
-        timer.setText("01:00");
+        updateTimer(SECONDS); //120 seconds
         countDownTime();
         resendButton.setVisibility(View.INVISIBLE);
     }

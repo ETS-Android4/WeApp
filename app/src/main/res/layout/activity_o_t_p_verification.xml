@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_light"
             android:text="VERIFY PHONE NUMBER"
-            android:textSize="30sp"
+            android:textSize="24dp"
             android:textStyle="bold"
             android:gravity="center"/>
 
@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25sp"
-            android:background="#8BC34A"
+            android:background="@android:color/holo_green_dark"
             android:fontFamily="@font/poppins_light"
             android:onClick="verifyOTP"
             android:text="VERIFY"
@@ -91,7 +91,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15sp"
-            android:background="#8BC34A"
+            android:background="@color/brown"
+            android:textColor="#ffffff"
             android:fontFamily="@font/poppins_light"
             android:onClick="resendOTP"
             android:text="RE-SEND OTP"

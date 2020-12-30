@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -141,12 +142,14 @@ private static final int GALLERY_PICK = 1;
                             Picasso.get().load(thumbnailImage).placeholder(R.drawable.default_dp).into(displayPictureView);
                         }
                     });
+                }else{
+                    Toast.makeText(ChatActivity.this, "Error in finding messages from the database!", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(ChatActivity.this, "Error in retrieving messages from the database!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -177,11 +180,11 @@ private static final int GALLERY_PICK = 1;
             final String chatUserRef = "messages/"+userId+"/"+uid;
 
             DatabaseReference userMessagePush = rootRef.child("messages").child(uid).child(userId).push();
+            userMessagePush.keepSynced(true);
 
             final String pushID = userMessagePush.getKey();
 
             final StorageReference filePath = imageStorage.child("messageImages").child(pushID+".jpg");
-
             filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -191,31 +194,37 @@ private static final int GALLERY_PICK = 1;
                             final String downloadUrl = uri.toString();
 
                             Map messageMapFrom = new HashMap();
-                            messageMapFrom.put("message",downloadUrl);
-                            messageMapFrom.put("type","image");
-                            messageMapFrom.put("time",ServerValue.TIMESTAMP);
-                            messageMapFrom.put("from",uid);
+                            messageMapFrom.put("message", downloadUrl);
+                            messageMapFrom.put("type", "image");
+                            messageMapFrom.put("time", ServerValue.TIMESTAMP);
+                            messageMapFrom.put("from", uid);
 
                             Map messageMapTo = new HashMap();
-                            messageMapTo.put("message",downloadUrl);
-                            messageMapTo.put("type","image");
-                            messageMapTo.put("time",ServerValue.TIMESTAMP);
-                            messageMapTo.put("from",uid);
+                            messageMapTo.put("message", downloadUrl);
+                            messageMapTo.put("type", "image");
+                            messageMapTo.put("time", ServerValue.TIMESTAMP);
+                            messageMapTo.put("from", uid);
 
                             Map userMessageMap = new HashMap();
-                            userMessageMap.put(currentUserRef+"/"+pushID,messageMapFrom);
-                            userMessageMap.put(chatUserRef+"/"+pushID,messageMapTo);
+                            userMessageMap.put(currentUserRef + "/" + pushID, messageMapFrom);
+                            userMessageMap.put(chatUserRef + "/" + pushID, messageMapTo);
 
                             rootRef.updateChildren(userMessageMap, new DatabaseReference.CompletionListener() {
                                 @Override
                                 public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                    if(error!=null){
+                                    if (error != null) {
                                         Toast.makeText(ChatActivity.this, "Error in sending the message!", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                         }
                     });
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(ChatActivity.this, "Error in uploading the image!", Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -225,8 +234,9 @@ private static final int GALLERY_PICK = 1;
 
         itemPos = 0;
         final DatabaseReference messageRef = rootRef.child("messages").child(uid).child(userId);
+        messageRef.keepSynced(true);
         Query query = messageRef.orderByKey().endAt(lastKey).limitToLast(TOTAL_ITEMS_TO_LOAD);
-
+        query.keepSynced(true);
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -267,7 +277,7 @@ private static final int GALLERY_PICK = 1;
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(ChatActivity.this, "Cannot load more messages!", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -275,8 +285,9 @@ private static final int GALLERY_PICK = 1;
     private void loadMessages() {
 
         final DatabaseReference messageRef = rootRef.child("messages").child(uid).child(userId);
+        messageRef.keepSynced(true);
         final Query query = messageRef.limitToLast(TOTAL_ITEMS_TO_LOAD);
-
+        query.keepSynced(true);
         query.addChildEventListener(new ChildEventListener() {
              @Override
              public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -313,7 +324,7 @@ private static final int GALLERY_PICK = 1;
 
              @Override
              public void onCancelled(@NonNull DatabaseError error) {
-
+                 Toast.makeText(ChatActivity.this, "Error in loading the messages!", Toast.LENGTH_SHORT).show();
              }
 
          });
@@ -328,6 +339,7 @@ private static final int GALLERY_PICK = 1;
             String chatUserRef = "messages/"+userId+"/"+uid;
 
             DatabaseReference userMessagePush = rootRef.child("messages").child(uid).child(userId).push();
+            userMessagePush.keepSynced(true);
             String pushID = userMessagePush.getKey();
 
             Map messageMapFrom = new HashMap();
@@ -345,6 +357,8 @@ private static final int GALLERY_PICK = 1;
             Map userMessageMap = new HashMap();
             userMessageMap.put(currentUserRef+"/"+pushID,messageMapFrom);
             userMessageMap.put(chatUserRef+"/"+pushID,messageMapTo);
+
+            messageView.smoothScrollToPosition(messagesList.size()-1);
 
             rootRef.updateChildren(userMessageMap, new DatabaseReference.CompletionListener() {
                 @Override
@@ -369,20 +383,17 @@ private static final int GALLERY_PICK = 1;
                         chatUserMap.put("chat/"+uid+"/"+userId,chatAddMap);
                         chatUserMap.put("chat/"+userId+"/"+uid,chatAddMap);
 
-                        rootRef.updateChildren(chatUserMap, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-
-                            }
-                        });
+                        rootRef.updateChildren(chatUserMap);
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Toast.makeText(ChatActivity.this,"Error when updating the chat!",Toast.LENGTH_LONG).show();
                 }
             });
+        }else{
+            Toast.makeText(this, "Type A Message!", Toast.LENGTH_SHORT).show();;
         }
     }
 

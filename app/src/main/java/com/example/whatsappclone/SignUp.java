@@ -66,7 +66,6 @@ public class SignUp extends AppCompatActivity {
         else{
             password.setError(null);
             password.setErrorEnabled(false);
-
             return true;
         }
     }
@@ -103,6 +102,8 @@ public class SignUp extends AppCompatActivity {
     public void isUser(){
 
         Query checkUser = ref.orderByChild("phoneNumber").equalTo(phoneNumberText);
+        checkUser.keepSynced(true);
+
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -114,7 +115,7 @@ public class SignUp extends AppCompatActivity {
                     try {
                         encryptPasswordText = cipherClass.encrypt(passwordText);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Toast.makeText(SignUp.this, "Error in encrypting the password!", Toast.LENGTH_LONG).show();
                     }
 
                     Intent intentOTP = new Intent(SignUp.this,OTPVerification.class);
@@ -129,6 +130,7 @@ public class SignUp extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(SignUp.this, "Error in checking through Database! Try Again!", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -166,7 +168,7 @@ public class SignUp extends AppCompatActivity {
         intent = new Intent(SignUp.this,Login.class);
         cipherClass = new CipherClass();
         ref = FirebaseDatabase.getInstance().getReference("users");
-
+        ref.keepSynced(true);
 
         pairs[0] = new Pair<View,String>(name,"signUpTrans");
         pairs[1] = new Pair<View,String>(email,"signUpTrans");

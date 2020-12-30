@@ -53,6 +53,7 @@ DatabaseReference ref;
         else{
 
             Query checkUser = ref.orderByChild("phoneNumber").equalTo(phoneNumberText);
+            checkUser.keepSynced(true);
             checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -74,7 +75,7 @@ DatabaseReference ref;
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Toast.makeText(ForgetPasswordPage.this, "Error! Not able to retrieve Data!", Toast.LENGTH_LONG).show();
                 }
             });
         }

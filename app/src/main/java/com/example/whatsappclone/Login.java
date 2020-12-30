@@ -63,6 +63,7 @@ public class Login extends AppCompatActivity {
             return true;
         }
     }
+
     public boolean validatePassword(String val){
 
         if(val.isEmpty()){
@@ -89,12 +90,14 @@ public class Login extends AppCompatActivity {
     }
 
     public void isUser(){
+
         ref = FirebaseDatabase.getInstance().getReference("users");
+        ref.keepSynced(true);
         Query checkUser = ref.orderByChild("phoneNumber").equalTo(phoneNumberText);
+        checkUser.keepSynced(true);
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                 if(snapshot.exists()){
                     phoneNumber.setError(null);
                     phoneNumber.setErrorEnabled(false);
@@ -107,7 +110,6 @@ public class Login extends AppCompatActivity {
                         Toast.makeText(Login.this, "Welcome " + name + "!", Toast.LENGTH_SHORT).show();
 
                         if(rememberMe.isChecked()){
-
                             editor.putString("phoneNumber",phoneNumberText);
                             editor.putString("password",passwordText);
                         }
@@ -136,10 +138,11 @@ public class Login extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(Login.this, "Error! Not able to be Logged In", Toast.LENGTH_LONG).show();
             }
         });
     }
+
     public void updateToken() {
         String refreshId = FirebaseInstanceId.getInstance().getToken();
         Token token = new Token(refreshId);
@@ -152,6 +155,7 @@ public class Login extends AppCompatActivity {
         startActivity(intent,options.toBundle());
         finish();
     }
+
     @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,7 +202,6 @@ public class Login extends AppCompatActivity {
     public void forgetPassword(View view){
         Intent intentFPass = new Intent(Login.this, ForgetPasswordPage.class);
         startActivity(intentFPass);
-        finish();
     }
 
     @Override
@@ -208,7 +211,7 @@ public class Login extends AppCompatActivity {
         phoneNumberText = phoneNumber.getEditText().getText().toString();
         Map updateStatus = new HashMap();
         updateStatus.put("online",false);
-       // updateStatus.put("lastSeen", ServerValue.TIMESTAMP);
+        updateStatus.put("lastSeen", ServerValue.TIMESTAMP);
         ref.child(phoneNumberText).updateChildren(updateStatus);
     }
 

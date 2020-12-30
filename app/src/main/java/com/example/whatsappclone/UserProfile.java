@@ -82,20 +82,24 @@ private ApiService apiService;
 
         ref = FirebaseDatabase.getInstance().getReference("users").child(userId);
         ref.keepSynced(true);
+        friendsStatus.setText("");
 
         sendFriendRequestRef = FirebaseDatabase.getInstance().getReference("friendsRequest");
+        sendFriendRequestRef.keepSynced(true);
         friendRef = FirebaseDatabase.getInstance().getReference("friends");
+        friendRef.keepSynced(true);
         notificationRef = FirebaseDatabase.getInstance().getReference("notification");
+        notificationRef.keepSynced(true);
         rootRef = FirebaseDatabase.getInstance().getReference();
-
+        rootRef.keepSynced(true);
         declineFriendRequestButton.setEnabled(false);
         declineFriendRequestButton.setVisibility(View.INVISIBLE);
 
         if(userId.equals(uid)) {
-
             sendFriendRequestButton.setVisibility(View.INVISIBLE);
             declineFriendRequestButton.setVisibility(View.INVISIBLE);
         }
+
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -103,7 +107,6 @@ private ApiService apiService;
                     String nameText = snapshot.child("name").getValue().toString();
                     String statusText = snapshot.child("status").getValue().toString();
                     final String image = snapshot.child("image").getValue().toString();
-
 
                     name.setText(nameText);
                     status.setText(statusText);
@@ -154,7 +157,7 @@ private ApiService apiService;
                                     }
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-
+                                        Toast.makeText(UserProfile.this, "Error! Try Again!", Toast.LENGTH_LONG).show();
                                     }
                                 });
                             }
@@ -162,7 +165,7 @@ private ApiService apiService;
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            Toast.makeText(UserProfile.this, "Error! Try Again!", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -170,7 +173,7 @@ private ApiService apiService;
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(UserProfile.this, "Error in retrieving the information!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -198,7 +201,6 @@ private ApiService apiService;
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if(snapshot.exists()) {
                                     final String token = snapshot.getValue(String.class);
-
                                     FirebaseDatabase.getInstance().getReference("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -272,11 +274,17 @@ private ApiService apiService;
                 rootRef.updateChildren(friendMap, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                        sendFriendRequestButton.setEnabled(true);
-                        currentState = "friends";
-                        sendFriendRequestButton.setText("UNFRIEND "+ name.getText().toString());
-                        declineFriendRequestButton.setEnabled(false);
-                        declineFriendRequestButton.setVisibility(View.INVISIBLE);
+                        if (error != null) {
+                            Toast.makeText(UserProfile.this, "Error in updating profile!", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            sendFriendRequestButton.setEnabled(true);
+                            currentState = "friends";
+                            sendFriendRequestButton.setText("UNFRIEND "+ name.getText().toString());
+                            declineFriendRequestButton.setEnabled(false);
+                            declineFriendRequestButton.setVisibility(View.INVISIBLE);
+                        }
+
                     }
                 });
             }
@@ -290,11 +298,17 @@ private ApiService apiService;
             friendRef.updateChildren(removeMap, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                    sendFriendRequestButton.setEnabled(true);
-                    currentState = "not_friends";
-                    sendFriendRequestButton.setText("SEND FRIEND REQUEST");
-                    declineFriendRequestButton.setEnabled(false);
-                    declineFriendRequestButton.setVisibility(View.INVISIBLE);
+                    if(error!=null){
+                        Toast.makeText(UserProfile.this, "Error in updating profile!", Toast.LENGTH_SHORT).show();
+                    }else{
+                        friendsStatus.setText("");
+                        sendFriendRequestButton.setEnabled(true);
+                        currentState = "not_friends";
+                        sendFriendRequestButton.setText("SEND FRIEND REQUEST");
+                        declineFriendRequestButton.setEnabled(false);
+                        declineFriendRequestButton.setVisibility(View.INVISIBLE);
+                    }
+
                 }
             });
 
@@ -329,14 +343,14 @@ private ApiService apiService;
             public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
                 if(response.code()==200){
                     if(response.body().success!=1){
-                        Toast.makeText(UserProfile.this, "Failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserProfile.this, "Sending Notification Failed", Toast.LENGTH_LONG).show();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<Response> call, Throwable t) {
-                Toast.makeText(UserProfile.this, "Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserProfile.this, "Sending Notification Failed", Toast.LENGTH_LONG).show();
             }
         });
     }
