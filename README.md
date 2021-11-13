@@ -30,22 +30,22 @@ selected, display appropriate messages after each move is played.
 
 Function defined so as to switch between the two algorithms.
 
-## Local Setup
-### <ins>Pre-requisites</ins>
+# Local Setup
+## <ins>Pre-requisites</ins>
 Android Studio with support of Java.
 You can download Android Studio [here](https://developer.android.com/studio).
 
-### <ins>Execution</ins>
+## <ins>Execution</ins>
 1. Pull the code and open it on Android Studio.<br />
 
-2. After it finishes building, Go to Project->Android->java->MainActivity<br />
+2. After it finishes building, Go to Project->Android->java<br />
 
 3. Either connect your phone or make an emulator. [Emulator Build](https://developer.android.com/studio/run/managing-avds).
 
 4. Click on Run, after building and installing the project will open.
 
 # Demo
-To check the demo, click on this link: <br/><br/> [![Watch the video](https://img.youtube.com/vi/-V6lSuS9pMY/maxresdefault.jpg)](https://youtu.be/-V6lSuS9pMY)
+To check the demo, click below: <br/><br/> [![Watch the video](https://user-images.githubusercontent.com/33955028/141613528-fbd87b6a-d266-4d9c-9871-004d8a298fc9.png)](https://youtu.be/-V6lSuS9pMY)
 
 # Contact
 ## [Aditya Srivastava](mailto:aditya26052002@gmail.com?subject=GitHub)
