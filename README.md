@@ -45,7 +45,7 @@ You can download Android Studio [here](https://developer.android.com/studio).
 4. Click on Run, after building and installing the project will open.
 
 # Demo
-To check the demo, click on this link: []()
+To check the demo, click on this link: <br/><br/> [![Watch the video](https://img.youtube.com/vi/-V6lSuS9pMY/maxresdefault.jpg)](https://youtu.be/-V6lSuS9pMY)
 
 # Contact
 ## [Aditya Srivastava](mailto:aditya26052002@gmail.com?subject=GitHub)
