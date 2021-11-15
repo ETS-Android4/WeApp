@@ -4,14 +4,14 @@ We-App is a chat app created for people. This application has been built to prov
 
 ## Features
 1. Easy to use UI for better access to the app.
-2. Uses AES encryption for the protection of users' information and messages.
-4. Ability to search people based on their phone numbers and request to be their friend.
-5. Notifications are sent to the user when a friend request is received.
-6. OTP verification during signup and resetting the password.
+2. OTP verification during signup and resetting the password.
+3. Uses AES encryption for the protection of users' information and messages.
+4. Ability to send messages and media in the chat.
+5. Gives the online status of the user. 
+6. Request tab provided for the user to see all the pending friend requests.
 7. Able to change your profile picture and status for proper identification.
-8. Ability to send messages and media in the chat.
-9. Gives the online status of the user. 
-10. Request tab provided for the user to see all the pending friend requests.
+8. Ability to search people based on their phone numbers and request to be their friend.
+9. Notifications are sent to the user when a friend request is received.
 
 ## Technologies Used
 1. XML
