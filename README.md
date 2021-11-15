@@ -1,34 +1,22 @@
 # <ins>**WeApp**</ins>
 # Description
+We-App is a chat app created for people. This application has been built to provide a secure and safer means of conversation where users can contact the authenticated users who are their friends. It was created with modular code and proper classification of each feature.
 
+## Features
+1. Used AES encryption for the protection of users' information and messages.
+2. Easy to use UI for better access to the app.
+3. Ability to search people based on their phone numbers and request to be their friend.
+4. Notifications are sent to the phone when a friend request is received.
+5. OTP verification during signup and resetting the password.
+6. Able to change your profile picture and status for proper identification.
+7. Ability to send messages and media in the chat.
+8. Gives the online status of the user. 
+9. Request tab provided for the user to see all the pending friend requests.
 
-
-## Objective
-
-### 1. [AlreadyOccupied](https://github.com/blank0826/AI-CheckersGame/blob/master/AlreadyOccupiedException.java)
-----
-This class gives an exception when the piece is already occupied.<br />
-
-### 2. [Checkers](https://github.com/blank0826/AI-CheckersGame/blob/master/Checkers.java)
-----
-This class initializes the game board. it sets properties for the javaFX UI and adds menu giving the option of Algorithms and Settings.<br /><br />
-**1. <ins>Algorithms:-</ins>** Random and Mini-max Algorithms.<br /><br/>
-**2. <ins>Settings:-</ins>** Reset and Exit.<br />
-
-### 3. [Logic](https://github.com/blank0826/AI-CheckersGame/blob/master/Logic.java)
-----
-This is the main class of the Checkers Game where the whole game takes place updating the board, moving pieces, and making all the algorithm-based decisions.
-
-### **<ins>Member Functions</ins>**
-**1.	Logic (int algoNum)**<br />
-
-Constructor to initialize the board, maintain what functions to be called whenever a piece is moved or <br />
-
-selected, display appropriate messages after each move is played.
-
-**2.	public chooseAlgo(int algo, char[][] game, int depth, String player)**<br />
-
-Function defined so as to switch between the two algorithms.
+## Technologies Used
+1. XML
+2. Java
+3. Firebase
 
 # Local Setup
 ## <ins>Pre-requisites</ins>
