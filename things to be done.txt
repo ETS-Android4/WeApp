@@ -1,0 +1,10 @@
+lastseen
+--------------------------------------DONE-----------------------------------------------------
+
+both sides chat
+request 
+search
+at the end of message
+online status -> through lastSeen time stamp if return null then online else offline
+ui changes
+remove item from recycler view
