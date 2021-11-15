@@ -235,7 +235,9 @@ private static final int GALLERY_PICK = 1;
         itemPos = 0;
         final DatabaseReference messageRef = rootRef.child("messages").child(uid).child(userId);
         messageRef.keepSynced(true);
+
         Query query = messageRef.orderByKey().endAt(lastKey).limitToLast(TOTAL_ITEMS_TO_LOAD); // after loading keeps it as precise location
+
         query.keepSynced(true);
         query.addChildEventListener(new ChildEventListener() {
             @Override
@@ -302,7 +304,9 @@ private static final int GALLERY_PICK = 1;
                  }
 
                 messagesList.add(messages);
+
                 messageAdapter.notifyDataSetChanged(); // this gives the final signal so as update chat activity
+
                 messageView.smoothScrollToPosition(messagesList.size()-1);
                 refreshLayout.setRefreshing(false);
              }

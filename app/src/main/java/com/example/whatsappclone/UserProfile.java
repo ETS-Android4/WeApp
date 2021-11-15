@@ -338,6 +338,7 @@ private ApiService apiService;
     public void sendNotification(String userToken,String title,String message){
         Data data = new Data(title,message,uid,userId);
         NotificationSender sender = new NotificationSender(data,userToken);
+
         apiService.sendNotification(sender).enqueue(new Callback<Response>() { // used google api to send notifications for frnd rquest
             @Override
             public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {

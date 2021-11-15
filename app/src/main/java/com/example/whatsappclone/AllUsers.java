@@ -109,7 +109,9 @@ public class AllUsers extends AppCompatActivity{
                 .child("users");
 
 
+
         FirebaseRecyclerOptions<UserClass> options = // create array of object holding information of everyone
+
                 new FirebaseRecyclerOptions.Builder<UserClass>()
                         .setQuery(query, new SnapshotParser<UserClass>() {
                             @NonNull

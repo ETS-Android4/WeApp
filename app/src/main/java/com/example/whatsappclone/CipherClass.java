@@ -10,7 +10,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class CipherClass {
     String AES = "AES";
+
     private static final String KEY = "1Hbfh667adfDEJ78";
+
 
     public String encrypt(String password){
         try {

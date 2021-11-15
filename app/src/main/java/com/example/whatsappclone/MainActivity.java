@@ -49,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
         title.setAnimation(bottomAnim);
         subTitle.setAnimation(bottomAnim);
 
+
         pref = getSharedPreferences("MyPref",MODE_APPEND); //local storage
+
         final String phoneNumberLogin = pref.getString("phoneNumber", "");
         final String passwordLogin = pref.getString("password","");
 
